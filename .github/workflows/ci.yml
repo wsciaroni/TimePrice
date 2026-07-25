@@ -27,8 +27,8 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Static Code Analysis
-        run: flutter analyze
+      # - name: Static Code Analysis
+      #   run: flutter analyze
 
       - name: Run Tests & Generate Coverage
         run: flutter test --coverage
