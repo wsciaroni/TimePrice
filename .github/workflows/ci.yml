@@ -9,7 +9,7 @@ on:
 
 jobs:
   ci:
-    name: Flutter Analyze, Test & SonarCloud
+    name: Flutter Build, Analyze, Test & SonarCloud
     runs-on: ubuntu-latest
 
     steps:
