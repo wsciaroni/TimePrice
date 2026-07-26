@@ -9,7 +9,7 @@ import 'package:time_price/services/persistence_service.dart';
 
 class AppStateProvider extends ChangeNotifier {
   AppStateProvider({PersistenceService? persistenceService})
-    : _persistenceService = persistenceService {
+      : _persistenceService = persistenceService {
     if (_persistenceService != null) {
       _loadSavedState();
     }
@@ -29,15 +29,18 @@ class AppStateProvider extends ChangeNotifier {
   IncomeConfig get incomeConfig => _incomeConfig;
   List<Deduction> get deductions => List.unmodifiable(_deductions);
   TaxConfig get taxConfig => _taxConfig;
+  double get priceInput => _price;
   double get price => _price;
   bool get isOnboardingCompleted => _isOnboardingCompleted;
 
-  TimeCostResult get result => CalculationService.calculateTimeCost(
-    price: _price,
-    income: _incomeConfig,
-    deductions: _deductions,
-    tax: _taxConfig,
-  );
+  TimeCostResult get timeCostResult => CalculationService.calculateTimeCost(
+        price: _price,
+        income: _incomeConfig,
+        deductions: _deductions,
+        tax: _taxConfig,
+      );
+
+  TimeCostResult get result => timeCostResult;
 
   void _loadSavedState() {
     final ps = _persistenceService;
@@ -47,6 +50,14 @@ class AppStateProvider extends ChangeNotifier {
     _taxConfig = ps.loadTaxConfig();
     _isOnboardingCompleted = ps.isOnboardingCompleted();
     notifyListeners();
+  }
+
+  Future<void> initialize() async {
+    _loadSavedState();
+  }
+
+  Future<void> updateIncome(IncomeConfig config) async {
+    await updateIncomeConfig(config);
   }
 
   Future<void> updateIncomeConfig(IncomeConfig config) async {
@@ -67,6 +78,21 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateDeduction(Deduction deduction) async {
+    final index = _deductions.indexWhere((d) => d.id == deduction.id);
+    if (index != -1) {
+      _deductions[index] = deduction;
+    } else {
+      _deductions.add(deduction);
+    }
+    await _persistenceService?.saveDeductions(_deductions);
+    notifyListeners();
+  }
+
+  Future<void> deleteDeduction(String id) async {
+    await removeDeduction(id);
+  }
+
   Future<void> removeDeduction(String id) async {
     _deductions.removeWhere((d) => d.id == id);
     await _persistenceService?.saveDeductions(_deductions);
@@ -79,9 +105,17 @@ class AppStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updatePriceInput(double price) {
+    updatePrice(price);
+  }
+
   void updatePrice(double price) {
     _price = price < 0 ? 0.0 : price;
     notifyListeners();
+  }
+
+  Future<void> completeOnboarding() async {
+    await setOnboardingCompleted(true);
   }
 
   Future<void> setOnboardingCompleted(bool completed) async {

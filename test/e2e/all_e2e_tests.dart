@@ -7,6 +7,7 @@ import 'settings_e2e_test.dart' as settings_test;
 import 'boundary_corner_e2e_test.dart' as boundary_test;
 import 'cross_feature_combinations_e2e_test.dart' as cross_feature_test;
 import 'real_world_scenarios_e2e_test.dart' as real_world_test;
+import 'adversarial_coverage_test.dart' as adversarial_test;
 
 void main() {
   onboarding_test.main();
@@ -18,4 +19,6 @@ void main() {
   boundary_test.main();
   cross_feature_test.main();
   real_world_test.main();
+  adversarial_test.main();
 }
+

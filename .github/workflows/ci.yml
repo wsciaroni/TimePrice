@@ -33,6 +33,9 @@ jobs:
       - name: Run Tests & Generate Coverage
         run: flutter test --coverage
 
+      - name: Build Application
+        run: flutter build apk --debug
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3.1.0
         env:

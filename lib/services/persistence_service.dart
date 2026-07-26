@@ -21,12 +21,12 @@ class PersistenceService {
   }
 
   IncomeConfig loadIncomeConfig() {
-    final str = prefs.getString(_keyIncome);
-    if (str != null) {
-      try {
+    try {
+      final str = prefs.getString(_keyIncome);
+      if (str != null) {
         return IncomeConfig.fromJson(jsonDecode(str) as Map<String, dynamic>);
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
     return const IncomeConfig(amount: 25.0, frequency: PayFrequency.hourly);
   }
 
@@ -35,15 +35,15 @@ class PersistenceService {
   }
 
   List<Deduction> loadDeductions() {
-    final str = prefs.getString(_keyDeductions);
-    if (str != null) {
-      try {
+    try {
+      final str = prefs.getString(_keyDeductions);
+      if (str != null) {
         final list = jsonDecode(str) as List<dynamic>;
         return list
             .map((e) => Deduction.fromJson(e as Map<String, dynamic>))
             .toList();
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
     return [];
   }
 
@@ -53,12 +53,12 @@ class PersistenceService {
   }
 
   TaxConfig loadTaxConfig() {
-    final str = prefs.getString(_keyTax);
-    if (str != null) {
-      try {
+    try {
+      final str = prefs.getString(_keyTax);
+      if (str != null) {
         return TaxConfig.fromJson(jsonDecode(str) as Map<String, dynamic>);
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
     return const TaxConfig(salesTaxRate: 0.0);
   }
 
@@ -67,7 +67,11 @@ class PersistenceService {
   }
 
   bool isOnboardingCompleted() {
-    return prefs.getBool(_keyOnboardingCompleted) ?? false;
+    try {
+      return prefs.getBool(_keyOnboardingCompleted) ?? false;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<bool> setOnboardingCompleted(bool completed) async {
