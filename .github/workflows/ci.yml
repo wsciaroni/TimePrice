@@ -36,8 +36,18 @@ jobs:
       - name: Build Application
         run: flutter build apk --debug
 
+      - name: Verify Coverage Report Exists
+        run: |
+          echo "--- Coverage file check ---"
+          ls -la coverage/
+          head -5 coverage/lcov.info
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          args: >
+            -X
+            -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
